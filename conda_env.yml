@@ -1,0 +1,26 @@
+# Conda environment installer
+#
+# To install the enviroment to Conda type:
+# conda env create -f conda_env.yml
+
+name: cellmodeller
+
+channels:
+  - defaults
+  - conda-forge
+
+dependencies:
+  - python
+  # Analysis
+  - numpy
+  - scipy
+  # Plotting
+  - matplotlib
+  - seaborn
+  # Drivers
+  - pyopengl
+  - pyopencl
+  # GUI
+  - pyqt5
+  # Others
+  - pip
