@@ -5,12 +5,12 @@
 # and then "brew install imagemagick" etc.
 
 # Run Draw2DPDF to generate pdf files
-for f in $( ls *.pickle ); do
-    echo Processing: $f
-    python $HOME/Code/CellModeller/Scripts/Draw2DPDF.py $f
+for file in $( ls *.pickle ); do
+    echo Processing: $file
+    python3 $HOME/apps/cellmodeller/Scripts/Draw2DPDF.py $file
 done
 
-# Convert and resize etc. pdf files into jpegs
+# Convert and resize etc. pdf files into png
 for f in $( ls *.pdf ); do
     NAME=`basename $f .pdf`
     convert \
