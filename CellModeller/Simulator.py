@@ -286,6 +286,7 @@ visualised.
         # Recreate models via module setup
         self.module.setup(self)
 
+    # Remove a cell from a simulation
     def kill(self, state):
         self.live_idxs = self.live_idxs[self.live_idxs!=state.idx]
         self.dead_idxs = numpy.append(self.dead_idxs, state.idx)

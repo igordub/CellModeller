@@ -11,3 +11,4 @@ class CellState:
         self.cellAge = 0
         self.neighbours = []
         self.effGrowth = 0.0
+        self.force = [0.0,0.0,0.0]
