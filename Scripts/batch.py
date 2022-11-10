@@ -7,16 +7,15 @@ import shutil
 from CellModeller.Simulator import Simulator
 
 max_cells = 50000
-max_steps = 1000
 cell_buffer = 256
 
-def simulate(modfilename, platform, device, steps=50):
+def simulate(modfilename, platform, device, steps=1000):
     (path,name) = os.path.split(modfilename)
     modname = str(name).split('.')[0]
     sys.path.append(path)
     sim = Simulator(modname, 0.025, clPlatformNum=platform, clDeviceNum=device, saveOutput=True)
     # while len(sim.cellStates) < max_cells-cell_buffer:
-    while sim.stepNum <= max_steps:
+    while (sim.stepNum <= steps) and (len(sim.cellStates) < max_cells-cell_buffer):
         sim.step()
 
 def main():
@@ -47,9 +46,16 @@ def main():
     else:
         platnum = int(sys.argv[2])
         devnum = int(sys.argv[3])
+    
+    # Check number of steps for simulation 
+    if len(sys.argv)<4:
+        # Simualte indefinitely
+        steps = 1000000
+    else:
+        steps = sys.argv[4]
 
     # Set up complete, now run the simulation
-    simulate(moduleName, platnum, devnum)
+    simulate(moduleName, platnum, devnum,steps=steps)
 
 # Make sure we are running as a script
 if __name__ == "__main__": 
