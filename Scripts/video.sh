@@ -7,18 +7,18 @@
 # Run Draw2DPDF to generate pdf files
 for file in $( ls *.pickle ); do
     echo Processing: $file
-    python3 $HOME/apps/cellmodeller/Scripts/Draw2DPDF.py $file
+    python3 $HOME/apps/cellmodeller/Scripts/Draw2DPDF.py $file > /dev/null
 done
 
 # Convert and resize etc. pdf files into png
-for f in $( ls *.pdf ); do
-    NAME=`basename $f .pdf`
+for file in $( ls *.pdf ); do
+    NAME=`basename $file .pdf`
     convert \
-           -colorspace RGB \
-	   -verbose       \
-           -density 150   \
-            $NAME.pdf      \
-            $NAME.png
+        -colorspace RGB \
+        -verbose        \
+        -density 150    \
+        $NAME.pdf       \
+        $NAME.png
 done
 
 # Run ffmpeg to generate video file
