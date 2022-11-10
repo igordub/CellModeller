@@ -1,3 +1,8 @@
+# PDF redering script from simualtion .pickle files
+# First two sys arguments specify simulation visualization area
+# $ pyhton3 $HOME/apps/cellmodeller/Scripts/Draw2DPDF.py <width> <heigth> <pickle-file(s)> 
+# Example: $ pyhton3 $HOME/apps/cellmodeller/Scripts/Draw2DPDF.py 30 3 *.pickle 
+
 import os
 import sys
 import math
@@ -136,20 +141,21 @@ class CellModellerPDFGenerator(Canvas):
         return id
 
     def computeBox(self):
-        # Find bounding box of colony, minimum size = (40,40)
-        mxx = 20
-        mnx = -20
-        mxy = 20
-        mny = -20
-        for (id,s) in list(self.states.items()):
-            pos = s.pos    
-            l = s.length    # add/sub length to keep cell in frame
-            mxx = max(mxx,pos[0]+l) 
-            mnx = min(mnx,pos[0]-l) 
-            mxy = max(mxy,pos[1]+l) 
-            mny = min(mny,pos[1]-l) 
-        w = (mxx-mnx)
-        h = (mxy-mny)
+        # Find bounding box of colony, minimum size = (1,1)
+        max_x = 0.5
+        min_x = -0.5
+        max_y = 0.5
+        min_y = -0.5
+        for (id,cell) in list(self.states.items()):
+            pos = cell.pos    
+            l = cell.length    # add/sub length to keep cell in frame
+            max_x = max(max_x,pos[0]+l) 
+            min_x = min(min_x,pos[0]-l) 
+            max_y = max(max_y,pos[1]+l) 
+            min_y = min(min_y,pos[1]-l) 
+        w = (max_x-min_x)
+        h = (max_y-min_y)
+
         return (w,h)
 #
 #End class CellModellerPDFGenerator
@@ -178,7 +184,10 @@ class MyPDFGenerator(CellModellerPDFGenerator):
         scol = Color(r*0.5,g*0.5,b*0.5,alpha=1.0)
         return [fcol,scol]
 
-def main():
+def main(world=(150,150), page=(20,20), center=(0,0), computeBox = False):
+    """ Renders a PDF form a .pickle file
+        Currently, only area of simualtion and sreen size are parsed.    
+    """
     # To do: parse some useful arguments as rendering options here
     # e.g. outline color, page size, etc.
     #
@@ -186,7 +195,7 @@ def main():
     bg_color = Color(0,0,0,alpha=1.0)
 
     # For now just assume a list of files
-    infns = sys.argv[1:]
+    infns = sys.argv[3:]
     for infn in infns:
         # File names
         if infn[-7:]!='.pickle':
@@ -209,19 +218,21 @@ def main():
         # Get the bounding square of the colony to size the image
         # This will resize the image to fit the page...
         # ** alternatively you can specify a fixed world size here
-        '''(w,h) = pdf.computeBox()
-        sqrt2 = math.sqrt(2)
-        world = (w/sqrt2,h/sqrt2)'''
-        world = (30,3)
-
-        # Page setup
-        page = (20,2)
-        center = (0,0)
+        if computeBox:
+            (w,h) = pdf.computeBox()
+            world = (w,h)
+            page = (20,(h/w)*20)
 
         # Render pdf
         print(('Rendering PDF output to %s'%outfn))
         pdf.draw_frame(outfn, world, page, center)
 
-if __name__ == "__main__": 
-    main()
+if __name__ == "__main__":
+    # Assume that only digits are passed
+    w = float(sys.argv[1])
+    h = float(sys.argv[2])
+
+    world = (w,h)
+    page = (20, (h/w)*20) 
+    main(world=world,page=page,computeBox = False)
 
