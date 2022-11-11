@@ -52,7 +52,7 @@ def main():
         # Simualte indefinitely
         steps = 1000000
     else:
-        steps = sys.argv[4]
+        steps = int(sys.argv[4])
 
     # Set up complete, now run the simulation
     simulate(moduleName, platnum, devnum,steps=steps)
